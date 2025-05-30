@@ -31,8 +31,10 @@ export interface IKeyword {
   search: string;
 }
 
+// 모달 영화 상세정보
 export interface IDetailMovie {
   backdrop_path: string;
+  credits: ICredit;
   genres :{
     id: number;
     name: string;
@@ -44,6 +46,37 @@ export interface IDetailMovie {
   runtime: number;
   vote_average: number;
   vote_count: number;
+  tagline: string;
+  release_date: string;
+}
+// 크레딧 정보
+export interface ICredit {
+  cast: ICast[];
+  crew: ICrew[];
+}
+export interface ICast {
+  cast_id: number;
+  character: string;
+  credit_id: string;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string;
+}
+export interface ICrew {
+  credit_id: string;
+  department: string;
+  gender: number;
+  id: number;
+  job: string;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string;
 }
 //tv
 export interface IGetTvResult {
@@ -78,6 +111,25 @@ export interface IDetailTv {
   vote_count: number;
 }
 
+export interface ISearchTv {
+  results: ISearchDetailTv[];
+  total_pages: number;
+  total_results: number;
+}
+
+export interface ISearchDetailTv {
+  backdrop_path: string;
+  original_language: string;
+  original_name: string;
+  overview:string
+  popularity: number;
+  release_date: string;
+  name: string;
+  vote_average: number;
+  vote_count: number;
+  id: number;
+}
+
 // movie
 export const getMovies = async () => {
   const response = await axios.get(
@@ -93,11 +145,20 @@ export const getCategoryMovies = async (category: string) => {
   return response.data;
 }
 
+// 영화 기본정보, 등장인물 등
 export const getDetailMovie = async (movieId: string) => {
-  const response = await axios.get(
-    `${BASE_URL}/movie/${movieId}?language=ko-KR&api_key=${API_KEY}`
-  );
-  return response.data;
+  // const response = await axios.get(
+  //   `${BASE_URL}/movie/${movieId}?language=ko-KR&api_key=${API_KEY}`
+  // );
+  // return response.data;
+  const [detail, credits] = await Promise.all([
+    axios.get(`${BASE_URL}/movie/${movieId}?language=ko-KR&api_key=${API_KEY}`),
+    axios.get(`${BASE_URL}/movie/${movieId}/credits?language=ko-KR&api_key=${API_KEY}`)
+  ]);
+  return {
+    ...detail.data,
+    credits: credits.data
+  };
 }
 
 // tv
@@ -117,16 +178,32 @@ export const getCategoryTvs = async (category: string) => {
 }
 
 export const getDetailTv = async (tvId: string) => {
+  // const response = await axios.get(
+  //   `${BASE_URL}/tv/${tvId}?language=en-US&api_key=${API_KEY}`
+  // )
+  // return response.data;
+  const [detail, credit] = await Promise.all([
+    axios.get(`${BASE_URL}/tv/${tvId}?language=en-US&api_key=${API_KEY}`),
+    axios.get(`${BASE_URL}/tv/${tvId}/credits?language=en-US&api_key=${API_KEY}`)
+  ])
+  return {
+    ...detail,
+    credits: credit
+  }
+}
+
+// 검색 movie
+export const getKeyword = async (search: string) => {
   const response = await axios.get(
-    `${BASE_URL}/tv/${tvId}?language=en-US&api_key=${API_KEY}`
-  )
+    `${BASE_URL}/search/movie?query=${search}&include_adult=false&language=en-US&page=1&api_key=${API_KEY}`,
+  );
   return response.data;
 }
 
-// 검색
-export const getKeyword = async (search: string) => {
+// 검색 tv show
+export const getKeywordTv = async (search: string) => {
   const response = await axios.get(
-    `${BASE_URL}/search/multi?query=${search}&include_adult=false&language=en-US&page=1&api_key=${API_KEY}`,
+    `${BASE_URL}/search/tv?query=${search}&include_adult=false&language=en-US&page=1&api_key=${API_KEY}`
   );
   return response.data;
 }

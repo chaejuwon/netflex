@@ -127,7 +127,7 @@ interface ICategory {
 }
 interface SliderAllProps {
   category: string;
-  onBoxClick: (movieId: number, category: string) => void;
+  onBoxClick: (id: number, category: string) => void;
 }
 
 
@@ -159,6 +159,10 @@ function SliderAll({category, onBoxClick}:SliderAllProps) {
     const max = Math.floor(total / offset) - 1;
     setIndex(prev => (prev === 0 ? max : prev - 1));
   };
+
+  const detailMovie = (id: number, category:string) => {
+    onBoxClick(id, category)
+  }
   return (
     <PopularSlider>
       <PopularTitle>
@@ -192,7 +196,7 @@ function SliderAll({category, onBoxClick}:SliderAllProps) {
                   variants={PopularVariants}
                   initial="normal"
                   whileHover="hover"
-                  onClick={() => onBoxClick(movie.id, category)}
+                  onClick={() => detailMovie(movie.id, category)}
                 >
                   <PopularColTitle variants={PopularTitleVariants}>
                     {movie.title}

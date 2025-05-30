@@ -12,7 +12,14 @@ import { useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import SliderAll from "../components/home/Slider";
 import Footer from "../components/common/Footer";
-
+import images from "../images/no_image.jpg";
+// 공토요소
+const Mt40 = styled.div`
+  margin-top: 40px;
+`;
+const Mt30 = styled.div`
+  margin-top: 30px;
+`;
 const Wrapper = styled.div`
   background-color: black;
 `;
@@ -36,13 +43,31 @@ const Banner = styled.div<{ bgPhoto: string }>`
 
 const Title = styled.h2`
   font-size: 72px;
-  margin-bottom: 20px;
 `;
 
 const Overview = styled.p`
-  font-size: 20px;
-  line-height: 120%;
-  width: 70%;
+  font-size: 24px;
+  line-height: 140%;
+  width: 60%;
+  margin:20px 0;
+`;
+
+const Button = styled(motion.button)`
+  padding:10px 12px;
+  font-size:20px;
+  width: 200px;
+  color: ${props => props.theme.white.lighter};
+  border: 2px solid ${props => props.theme.black.darker};
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all .3s ease-in-out;
+  &:hover {
+    color: ${props => props.theme.black.darker};
+    border: 2px solid ${props => props.theme.white.lighter};
+    background: ${props => props.theme.white.lighter};
+  }
 `;
 
 const Overlay = styled(motion.div)`
@@ -60,38 +85,39 @@ const BigMovie = styled(motion.div)`
   z-index:99;
   position: fixed;
   width: 40vw;
-  height: 60vh;
+  height: 80vh;
   left: 0;
   right: 0;
   margin: 0 auto;
   background-color: ${(props) => props.theme.black.lighter};
+  overflow-x: auto;
 `;
 const BigInfo = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  top: -70px;
+  top: -75px;
+  padding: 15px;
 `;
 
 const BigCover = styled.div`
   background-position: center center;
   width: 100%;
-  height: 300px;
+  height: 350px;
   background-size: cover;
 `;
 
 const BigTitle = styled.h2`
   color: ${props => props.theme.white.lighter};
-  font-size: 32px;
-  padding: 15px;
+  font-size: 40px;
+  font-weight: bold;
 `;
-
 const GenreWrap = styled.p`
-  padding: 15px;
+  padding: 10px;
 
   span {
-    padding: 3px 10px;
-    border-radius: 10px;
+    padding: 2px 8px;
+    border-radius: 5px;
     border: 1px solid ${props => props.theme.white.lighter};
     font-size: 14px;
     margin-right: 8px;
@@ -101,14 +127,78 @@ const GenreWrap = styled.p`
 const BigOverview = styled.p`
   color: ${props => props.theme.white.lighter};
   font-size: 16px;
-  padding: 10px 15px;
   line-height: 140%;
 `;
-
-interface SelectedMovie {
-  id: number;
-  category: string;
-}
+const Tagline = styled.h2`
+  font-size:28px;
+  color: ${props=> props.theme.white.lighter};
+  padding: 0 15px;
+  position: relative;
+  &:before {
+    content: "";
+    position: absolute;
+    top:0;
+    left:0;
+    width:2px;
+    height: 100%;
+    background-color: red;
+  }
+`;
+const InfoTitle = styled.h3`
+  font-size:22px;
+  font-weight: bold;
+  padding: 0;
+  color: ${props => props.theme.white.lighter};
+`;
+const InfoContent = styled.p`
+  font-size: 18px;
+  margin-left:15px;
+  color: ${props => props.theme.white.lighter};
+`;
+const InfoFlexTitle = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  font-weight: bold;
+  color: ${props => props.theme.white.lighter};
+  p {
+    font-size:22px;
+  }
+  span {
+    font-size:20px;
+  }
+`;
+const GridWrap = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:10px;
+`;
+const FlexWrap = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+const CreditWrap = styled.div`
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  gap:10px;
+  margin-top:30px;
+`;
+const CreditItem = styled.div`
+  flex: 0 0 20%;
+  text-align: center;
+  img {
+    width: 100%;
+    max-width: 145px;
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+  }
+  p {
+    margin-top:5px;
+  }
+`;
 function Home() {
   const history = useHistory();
   const bigMovieMatch = useRouteMatch<{ movieId: string }>("/movies/:movieId");
@@ -124,12 +214,17 @@ function Home() {
     queryFn: () => getDetailMovie(movieId ?? ""),
     enabled: !!movieId
   });
-  // 슬라이드 카운트
-  const [selected, setSelected] = useState<SelectedMovie>();
+  const [selected, setSelected] = useState("");
+  const onBoxClick= (id:number, category:string) => {
+    setSelected(category);
+    history.push(`/movies/${id}`);
+    document.body.style.overflowY = "hidden";
+  }
 
   // 박스 밖 영역 클릭시 주소 바꾸기
   const onClickOverlay = () => {
     history.push("/");
+    document.body.style.overflowY = "auto";
   };
 
   const categories = ["now_playing", "popular", "upcoming", "top_rated"];
@@ -141,14 +236,19 @@ function Home() {
             <Banner bgPhoto={makeImagePath(data?.results[1].backdrop_path || "")}>
               <Title>{data?.results[1].original_title}</Title>
               <Overview>{data?.results[1].overview}</Overview>
+              <Button
+                layoutId={`${data?.results[1].id}`}
+                onClick={() => onBoxClick(data?.results[1].id as number, "now")}
+              >
+                상세보기
+              </Button>
             </Banner>
             {categories.map((category) => (
               <SliderAll
                 key={category}
                 category={category}
-                onBoxClick={(id, cat) => {
-                  setSelected({ id, category: cat });
-                  history.push(`/movies/${id}`);
+                onBoxClick={(id, category) => {
+                  onBoxClick(id, category);
                 }}
               />
             ))}
@@ -157,20 +257,74 @@ function Home() {
                 <>
                   <Overlay onClick={onClickOverlay} exit={{ opacity: 0 }}
                            animate={{ opacity: 1 }} />
-                  <BigMovie style={{ top: 200 }}
-                            layoutId={`${selected?.category}-${bigMovieMatch.params.movieId}`}>
+                  <BigMovie style={{ top: 100 }}
+                            layoutId={selected ? `${selected}-${bigMovieMatch.params.movieId}` : `now-${bigMovieMatch.params.movieId}`}>
                     {detailData && (
                       <>
                         <BigCover
                           style={{ backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(detailData.backdrop_path, "w500")})` }} />
                         <BigInfo>
                           <BigTitle>{detailData.title}</BigTitle>
-                          <GenreWrap>
-                            {detailData.genres.map(genre => (
-                              <span key={genre.id}>{genre.name}</span>
-                            ))}
-                          </GenreWrap>
-                          <BigOverview>{detailData.overview}</BigOverview>
+                          <Mt30>
+                            <Tagline>
+                              {detailData.tagline}
+                            </Tagline>
+                          </Mt30>
+                          <Mt30>
+                              <GridWrap>
+                                <FlexWrap>
+                                  <InfoTitle>장르</InfoTitle>
+                                  <GenreWrap>
+                                    {detailData.genres.map(genre => (
+                                      <span key={genre.id}>{genre.name}</span>
+                                    ))}
+                                  </GenreWrap>
+                                </FlexWrap>
+                                <FlexWrap>
+                                  <InfoTitle>출시날짜 / 상영시간</InfoTitle>
+                                  <InfoContent>{detailData.release_date} / {detailData.runtime}분</InfoContent>
+                                </FlexWrap>
+                                <FlexWrap>
+                                  <InfoTitle>평점참여자</InfoTitle>
+                                  <InfoContent>{detailData.vote_count.toLocaleString()}명</InfoContent>
+                                </FlexWrap>
+                                <FlexWrap>
+                                  <InfoTitle>평점</InfoTitle>
+                                  <InfoContent>{detailData.vote_average} / 10</InfoContent>
+                                </FlexWrap>
+                              </GridWrap>
+                          </Mt30>
+                          <Mt30>
+                            <BigOverview>{detailData.overview}</BigOverview>
+                          </Mt30>
+                          <Mt40>
+                            <InfoFlexTitle>
+                              <p>출연진</p>
+                              <span>{detailData.credits.cast.length}명</span>
+                            </InfoFlexTitle>
+                            <CreditWrap>
+                              {detailData.credits.cast.map((cast) => (
+                                <CreditItem key={cast.credit_id}>
+                                  {cast.profile_path ?  <img src={makeImagePath(cast.profile_path, "w200")} /> : <img src={images} />}
+                                  <p>{cast.name ? cast.name : cast.original_name}</p>
+                                </CreditItem>
+                                ))}
+                            </CreditWrap>
+                          </Mt40>
+                          <Mt40>
+                            <InfoFlexTitle>
+                              <p>제작진</p>
+                              <span>{detailData.credits.crew.length}명</span>
+                            </InfoFlexTitle>
+                            <CreditWrap>
+                              {detailData.credits.crew.map((crew) => (
+                                <CreditItem key={crew.credit_id}>
+                                  {crew.profile_path ?  <img src={makeImagePath(crew.profile_path, "w200")} /> : <img src={images} />}
+                                  <p>{crew.name ? crew.name : crew.original_name}</p>
+                                </CreditItem>
+                              ))}
+                            </CreditWrap>
+                          </Mt40>
                         </BigInfo>
                       </>
                     )}

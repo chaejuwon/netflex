@@ -13,7 +13,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import SliderAll from "../components/tv/Slider";
-
+// 공토요소
+const Mt40 = styled.div`
+  margin-top: 40px;
+`;
+const Mt30 = styled.div`
+  margin-top: 30px;
+`;
 const Wrapper = styled.div`
   width: 100%;
 `;
@@ -35,6 +41,23 @@ const BgOverView = styled.p`
   font-size:34px;
   color: ${props => props.theme.white.lighter};
   width: 60%;
+`;
+const Button = styled(motion.button)`
+  padding:10px 12px;
+  font-size:20px;
+  width: 200px;
+  color: ${props => props.theme.white.lighter};
+  border: 2px solid ${props => props.theme.black.darker};
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all .3s ease-in-out;
+  &:hover {
+    color: ${props => props.theme.black.darker};
+    border: 2px solid ${props => props.theme.white.lighter};
+    background: ${props => props.theme.white.lighter};
+  }
 `;
 const Slider = styled.div`
   position: relative;
@@ -154,6 +177,76 @@ const GenreWrap = styled.p`
     border: 1px solid ${props => props.theme.white.lighter};
     font-size: 14px;
     margin-right: 8px;
+  }
+`;
+const Tagline = styled.h2`
+  font-size:28px;
+  color: ${props=> props.theme.white.lighter};
+  padding: 0 15px;
+  position: relative;
+  &:before {
+    content: "";
+    position: absolute;
+    top:0;
+    left:0;
+    width:2px;
+    height: 100%;
+    background-color: red;
+  }
+`;
+const InfoTitle = styled.h3`
+  font-size:22px;
+  font-weight: bold;
+  padding: 0;
+  color: ${props => props.theme.white.lighter};
+`;
+const InfoContent = styled.p`
+  font-size: 18px;
+  margin-left:15px;
+  color: ${props => props.theme.white.lighter};
+`;
+const InfoFlexTitle = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  font-weight: bold;
+  color: ${props => props.theme.white.lighter};
+  p {
+    font-size:22px;
+  }
+  span {
+    font-size:20px;
+  }
+`;
+const GridWrap = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:10px;
+`;
+const FlexWrap = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+const CreditWrap = styled.div`
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  gap:10px;
+  margin-top:30px;
+`;
+const CreditItem = styled.div`
+  flex: 0 0 20%;
+  text-align: center;
+  img {
+    width: 100%;
+    max-width: 145px;
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+  }
+  p {
+    margin-top:5px;
   }
 `;
 const rowVariants = {
@@ -317,20 +410,20 @@ function Tv() {
                     animate="hover"
                     exit="exit"
                   />
-                  <TvDetail layoutId={selectCate + detailTvData.id + ""}>
-                    <DetailWrap>
-                      <DetailBg bgPhoto={makeImagePath(detailTvData.backdrop_path)}/>
-                      <DetailInfo>
-                        <DetailTitle>{detailTvData.name}</DetailTitle>
-                        <GenreWrap>
-                          {detailTvData.genres.map(genre => (
-                            <span key={genre.id}>{genre.name}</span>
-                          ))}
-                        </GenreWrap>
-                        <DetailOverview>{detailTvData.overview}</DetailOverview>
-                      </DetailInfo>
-                    </DetailWrap>
-                  </TvDetail>
+                  {/*<TvDetail layoutId={selectCate + detailTvData.id + ""}>*/}
+                  {/*  <DetailWrap>*/}
+                  {/*    <DetailBg bgPhoto={makeImagePath(detailTvData.backdrop_path)}/>*/}
+                  {/*    <DetailInfo>*/}
+                  {/*      <DetailTitle>{detailTvData.name}</DetailTitle>*/}
+                  {/*      <GenreWrap>*/}
+                  {/*        {detailTvData.genres.map(genre => (*/}
+                  {/*          <span key={genre.id}>{genre.name}</span>*/}
+                  {/*        ))}*/}
+                  {/*      </GenreWrap>*/}
+                  {/*      <DetailOverview>{detailTvData.overview}</DetailOverview>*/}
+                  {/*    </DetailInfo>*/}
+                  {/*  </DetailWrap>*/}
+                  {/*</TvDetail>*/}
                 </>
               )}
             </AnimatePresence>
