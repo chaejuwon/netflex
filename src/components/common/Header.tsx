@@ -56,9 +56,9 @@ const Search = styled.form`
   display: flex;
   align-items: center;
   position: relative;
-
   svg {
     height: 25px;
+    padding-right: 10px;
   }
 `;
 const Circle = styled(motion.span)`
@@ -76,12 +76,12 @@ const Input = styled(motion.input)`
   transform-origin: right center;
   position: absolute;
   right: 0px;
-  padding: 5px 10px 0 40px;
+  padding: 10px 10px 10px 40px;
   z-index: -1;
   color: white;
   font-size: 16px;
   background-color: transparent;
-  border: 1px solid ${(props) => props.theme.white.lighter};
+  border: 1px solid rgba(255,255,255, .4);
 `;
 
 const logoVars = {

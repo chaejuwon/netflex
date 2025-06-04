@@ -275,7 +275,7 @@ function Home() {
                                 <FlexWrap>
                                   <InfoTitle>장르</InfoTitle>
                                   <GenreWrap>
-                                    {detailData.genres.map(genre => (
+                                    {detailData.genres.slice(0, 2).map(genre => (
                                       <span key={genre.id}>{genre.name}</span>
                                     ))}
                                   </GenreWrap>

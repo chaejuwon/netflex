@@ -13,6 +13,10 @@ import { useEffect } from "react";
 import images from "../images/no_image.jpg";
 import Footer from "../components/common/Footer";
 
+const Mt50 = styled.div`
+  margin-top:100px;
+`;
+
 const Wrapper = styled.div`
   width: 100%;
   max-width: 1200px;
@@ -25,9 +29,9 @@ const MovieTitle = styled.div`
 `;
 
 const SearchWrap = styled.div`
-  padding-top:40px;
+  padding-top:30px;
   display: grid;
-  gap:5px;
+  gap:10px;
   grid-template-columns: repeat(5, 1fr);
 `;
 
@@ -35,17 +39,24 @@ const SearchItem = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  border:1px solid #fff;
+  border:1px solid rgba(255, 255, 255, 0.2);
+  box-sizing: border-box;
 `;
 
 const Img = styled.img`
   width: 100%;
+  max-height: 129px;
+  overflow: hidden;
 `;
 
 const Title = styled.h2`
   font-size:16px;
   padding:15px;
   text-align: center;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 function Search() {
@@ -80,18 +91,20 @@ function Search() {
             ))
           )}
         </SearchWrap>
-        <MovieTitle>"{search}"의 티비쇼 검색결과</MovieTitle>
-        <SearchWrap>
-          {tvIsLoading ? "...isTvLoading" : (
-            tvData?.results.slice(0, 10).map((tv) => (
-              <SearchItem key={tv.id}>
-                {tv.backdrop_path ? <Img src={makeImagePath(tv.backdrop_path)} /> : <Img src={images} />}
-                <Title>{tv.original_name}</Title>
+        <Mt50>
+          <MovieTitle>"{search}"의 티비프로그램 검색결과</MovieTitle>
+          <SearchWrap>
+            {tvIsLoading ? "...isTvLoading" : (
+              tvData?.results.slice(0, 10).map((tv) => (
+                <SearchItem key={tv.id}>
+                  {tv.backdrop_path ? <Img src={makeImagePath(tv.backdrop_path)} /> : <Img src={images} />}
+                  <Title>{tv.original_name}</Title>
 
-              </SearchItem>
-            ))
-          )}
-        </SearchWrap>
+                </SearchItem>
+              ))
+            )}
+          </SearchWrap>
+        </Mt50>
       </Wrapper>
       <Footer />
     </>

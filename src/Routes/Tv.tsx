@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import SliderAll from "../components/tv/Slider";
+import images from "../images/no_image.jpg";
 // 공토요소
 const Mt40 = styled.div`
   margin-top: 40px;
@@ -32,33 +33,16 @@ const BgWrap = styled.div<{bgPhoto: string}>`
   justify-content: center;
   padding:60px;
 `;
-const BgTitle = styled.h2`
-  font-size:72px;
-  color: ${props => props.theme.white.lighter};
-  margin-bottom:30px;
-`;
-const BgOverView = styled.p`
-  font-size:34px;
-  color: ${props => props.theme.white.lighter};
-  width: 60%;
-`;
-const Button = styled(motion.button)`
-  padding:10px 12px;
-  font-size:20px;
-  width: 200px;
-  color: ${props => props.theme.white.lighter};
-  border: 2px solid ${props => props.theme.black.darker};
-  border-radius: 5px;
-  background: transparent;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all .3s ease-in-out;
-  &:hover {
-    color: ${props => props.theme.black.darker};
-    border: 2px solid ${props => props.theme.white.lighter};
-    background: ${props => props.theme.white.lighter};
-  }
-`;
+// const BgTitle = styled.h2`
+//   font-size:72px;
+//   color: ${props => props.theme.white.lighter};
+//   margin-bottom:30px;
+// `;
+// const BgOverView = styled.p`
+//   font-size:34px;
+//   color: ${props => props.theme.white.lighter};
+//   width: 60%;
+// `;
 const Slider = styled.div`
   position: relative;
   height: 200px;
@@ -98,7 +82,7 @@ const SliderColTitle = styled(motion.div)`
 `;
 const BtnWrap = styled.div`
   position: relative;
-  z-index: 3;
+  z-index: 99;
 `;
 const IncreaseBtn =styled.div`
   position: absolute;
@@ -124,16 +108,35 @@ const DecreaseBtn = styled.div`
   padding:15px;
   cursor: pointer;
 `;
-const TvDetail = styled(motion.div)`
-  z-index:99;
-  position: fixed;
-  width:40vw;
-  height:60vh;
-  top:100px;
-  left:0;
-  right:0;
-  margin:0 auto;
+const Title = styled.h2`
+  font-size: 72px;
 `;
+
+const Overview = styled.p`
+  font-size: 24px;
+  line-height: 140%;
+  width: 60%;
+  margin:20px 0;
+`;
+
+const Button = styled(motion.button)`
+  padding:10px 12px;
+  font-size:20px;
+  width: 200px;
+  color: ${props => props.theme.white.lighter};
+  border: 2px solid ${props => props.theme.black.darker};
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all .3s ease-in-out;
+  &:hover {
+    color: ${props => props.theme.black.darker};
+    border: 2px solid ${props => props.theme.white.lighter};
+    background: ${props => props.theme.white.lighter};
+  }
+`;
+
 const Overlay = styled(motion.div)`
   z-index:99;
   position: fixed;
@@ -142,42 +145,57 @@ const Overlay = styled(motion.div)`
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, .6);
+  opacity: 0;
 `;
-const DetailWrap = styled.div`
+
+const BigMovie = styled(motion.div)`
+  z-index:99;
+  position: fixed;
+  width: 40vw;
+  height: 80vh;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  background-color: ${(props) => props.theme.black.lighter};
+  overflow-x: auto;
+`;
+const BigInfo = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  top: -75px;
+  padding: 15px;
+`;
 
+const BigCover = styled.div`
+  background-position: center center;
+  width: 100%;
+  height: 350px;
+  background-size: cover;
 `;
-const DetailBg = styled.div<{bgPhoto: string}>`
-  background: url(${props => props.bgPhoto});
-  background-size:cover;
-  height:300px;
-`;
-const DetailInfo = styled.div`
-  background: ${props => props.theme.black.darker};
-  padding:30px;
-  max-height: 300px;
-  overflow-y: auto;
-`;
-const DetailTitle = styled.h2`
-  font-size: 48px;
+
+const BigTitle = styled.h2`
   color: ${props => props.theme.white.lighter};
-`;
-const DetailOverview = styled.h2`
-  font-size:20px;
-  color: ${props => props.theme.white.lighter};
+  font-size: 40px;
+  font-weight: bold;
 `;
 const GenreWrap = styled.p`
-  padding: 20px 0;
+  padding: 10px;
 
   span {
-    padding: 3px 10px;
-    border-radius: 10px;
+    padding: 2px 8px;
+    border-radius: 5px;
     border: 1px solid ${props => props.theme.white.lighter};
     font-size: 14px;
-    margin-right: 8px;
+    margin: 5px;
+    display: inline-block;
   }
+`;
+
+const BigOverview = styled.p`
+  color: ${props => props.theme.white.lighter};
+  font-size: 16px;
+  line-height: 140%;
 `;
 const Tagline = styled.h2`
   font-size:28px;
@@ -249,16 +267,31 @@ const CreditItem = styled.div`
     margin-top:5px;
   }
 `;
+const EpisodeWrap = styled.div`
+  display: flex;
+  justify-content: start;
+  gap: 20px;
+  margin-top:20px;
+  h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 7px;
+  }
+  p {
+    font-size: 16px;
+    line-height: 140%;
+  }
+`;
 const rowVariants = {
-  initial: {
-    x: window.innerWidth
-  },
+  initial: (state: boolean) => ({
+    x: state ? window.innerWidth : -window.innerWidth
+  }),
   animate: {
     x: 0
   },
-  exit: {
-    x: -window.innerWidth
-  }
+  exit: (state: boolean) => ({
+    x: state ? -window.innerWidth : window.innerWidth
+  })
 }
 const colVariants = {
   normal: {
@@ -318,15 +351,25 @@ function Tv() {
   const offset = 6;
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
+  const [state, setState] = useState(false);
   const onSlideFn = () => {
     setLeaving(prev => !prev);
   }
   const InCreaseFn = () => {
     if(leaving) return;
     onSlideFn();
-    const total = (cateData?.results.length ?? 0) - 2;
-    const maxLength = Math.floor(total / offset);
+    setState(true);
+    const total = (cateData?.results.length ?? 0);
+    const maxLength = Math.floor(total / offset) - 1;
     setIndex(prev => prev === maxLength ? 0 : prev + 1);
+  }
+  const DeCreaseFn = () => {
+    if(leaving) return;
+    onSlideFn();
+    setState(false);
+    const total = (cateData?.results.length ?? 0);
+    const maxLength = Math.floor(total / offset) - 1;
+    setIndex(prev => prev === 0 ? maxLength : prev - 1);
   }
   // 해당 주소 불러오기 id값으로
   const history = useHistory();
@@ -341,7 +384,7 @@ function Tv() {
   const tvId = bigMatch?.params.tvId;
   const {data: detailTvData, isLoading: detailTvLoading} = useQuery<IDetailTv>({
     queryKey: ["tv", tvId],
-    queryFn: () => getDetailTv(tvId as string),
+    queryFn: () => getDetailTv(tvId ?? ""),
     enabled: !!tvId
   })
   console.log(detailTvData);
@@ -355,9 +398,10 @@ function Tv() {
       <Wrapper>
         {isLoading ? "...loading" : (
           <>
-            <BgWrap onClick={InCreaseFn} bgPhoto={makeImagePath(data?.results[1].backdrop_path as string)}>
-              <BgTitle>{data?.results[1].name}</BgTitle>
-              <BgOverView>{data?.results[1].overview}</BgOverView>
+            <BgWrap bgPhoto={makeImagePath(data?.results[1].backdrop_path as string)}>
+              <Title>{data?.results[1].name}</Title>
+              <Overview>{data?.results[1].overview}</Overview>
+              <Button>상세보기</Button>
             </BgWrap>
             <Slider>
               <AnimatePresence initial={false} onExitComplete={onSlideFn}>
@@ -368,11 +412,12 @@ function Tv() {
                   animate="animate"
                   exit="exit"
                   transition={{ type: "tween", duration: 0.5 }}
+                  custom={state}
                 >
                   {cateData && (
                     cateData.results.slice(offset * index, offset * index + offset).map(tv => (
                       <SliderCol
-                        layoutId={"airing_today" + tv.id + ""}
+                        layoutId={"airing_today-" + tv.id + ""}
                         key={tv.id}
                         bgPhoto={makeImagePath(tv.backdrop_path)}
                         variants={colVariants}
@@ -380,15 +425,15 @@ function Tv() {
                         whileHover="hover"
                         onClick={() => detailTv(tv.id, "airing_today")}
                       >
-                        <SliderColTitle variants={titleVariants}>{tv.name}</SliderColTitle>
+                        <SliderColTitle variants={titleVariants}>{tv.original_name}</SliderColTitle>
                       </SliderCol>
                     ))
                   )}
                 </SliderRow>
               </AnimatePresence>
               <BtnWrap>
-                <IncreaseBtn>▶</IncreaseBtn>
-                <DecreaseBtn>◀</DecreaseBtn>
+                <IncreaseBtn onClick={InCreaseFn}>▶</IncreaseBtn>
+                <DecreaseBtn onClick={DeCreaseFn}>◀</DecreaseBtn>
               </BtnWrap>
             </Slider>
             {categories.map((category) => (
@@ -401,7 +446,7 @@ function Tv() {
               />
             ))}
             <AnimatePresence>
-              {detailTvData && (
+              {bigMatch && (
                 <>
                   <Overlay
                     onClick={leaveDetail}
@@ -410,20 +455,90 @@ function Tv() {
                     animate="hover"
                     exit="exit"
                   />
-                  {/*<TvDetail layoutId={selectCate + detailTvData.id + ""}>*/}
-                  {/*  <DetailWrap>*/}
-                  {/*    <DetailBg bgPhoto={makeImagePath(detailTvData.backdrop_path)}/>*/}
-                  {/*    <DetailInfo>*/}
-                  {/*      <DetailTitle>{detailTvData.name}</DetailTitle>*/}
-                  {/*      <GenreWrap>*/}
-                  {/*        {detailTvData.genres.map(genre => (*/}
-                  {/*          <span key={genre.id}>{genre.name}</span>*/}
-                  {/*        ))}*/}
-                  {/*      </GenreWrap>*/}
-                  {/*      <DetailOverview>{detailTvData.overview}</DetailOverview>*/}
-                  {/*    </DetailInfo>*/}
-                  {/*  </DetailWrap>*/}
-                  {/*</TvDetail>*/}
+                  <BigMovie style={{ top: 100 }}
+                            layoutId={selectCate ? `${selectCate}-${bigMatch.params.tvId}` : `now-${bigMatch.params.tvId}`}>
+                    {detailTvData && (
+                      <>
+                        <BigCover
+                          style={{ backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(detailTvData.backdrop_path, "w500")})` }} />
+                        <BigInfo>
+                          <BigTitle>{detailTvData.name}</BigTitle>
+                          <Mt30>
+                            <Tagline>
+                              {detailTvData.tagline}
+                            </Tagline>
+                          </Mt30>
+                          <Mt30>
+                            <GridWrap>
+                              <FlexWrap>
+                                <InfoTitle>장르</InfoTitle>
+                                <GenreWrap>
+                                  {detailTvData.genres.slice(0, 2).map(genre => (
+                                    <span key={genre.id}>{genre.name}</span>
+                                  ))}
+                                </GenreWrap>
+                              </FlexWrap>
+                              <FlexWrap>
+                                <InfoTitle>첫방영일</InfoTitle>
+                                <InfoContent>{detailTvData.first_air_date}</InfoContent>
+                              </FlexWrap>
+                              <FlexWrap>
+                                <InfoTitle>평점참여자</InfoTitle>
+                                <InfoContent>{detailTvData.vote_count.toLocaleString()}명</InfoContent>
+                              </FlexWrap>
+                              <FlexWrap>
+                                <InfoTitle>평점</InfoTitle>
+                                <InfoContent>{detailTvData.vote_average} / 10</InfoContent>
+                              </FlexWrap>
+                            </GridWrap>
+                          </Mt30>
+                          <Mt30>
+                            <BigOverview>{detailTvData.overview}</BigOverview>
+                          </Mt30>
+                          <Mt40>
+                            <InfoFlexTitle>
+                              <p>최근회차 - Episode{detailTvData.last_episode_to_air?.episode_number} ({detailTvData.last_episode_to_air?.air_date})</p>
+                            </InfoFlexTitle>
+                            <EpisodeWrap>
+                              <img style={{ width: 350 }} src={makeImagePath(detailTvData.last_episode_to_air?.still_path)} />
+                              <div>
+                                <h2>{detailTvData.last_episode_to_air?.name}</h2>
+                                <p>{detailTvData.last_episode_to_air?.overview}</p>
+                              </div>
+                            </EpisodeWrap>
+                          </Mt40>
+                          <Mt40>
+                            <InfoFlexTitle>
+                              <p>출연진</p>
+                              <span>{detailTvData.credits.cast.length}명</span>
+                            </InfoFlexTitle>
+                            <CreditWrap>
+                              {detailTvData.credits.cast.map((cast) => (
+                                <CreditItem key={cast.credit_id}>
+                                  {cast.profile_path ?  <img src={makeImagePath(cast.profile_path, "w200")} /> : <img src={images} />}
+                                  <p>{cast.name ? cast.name : cast.original_name}</p>
+                                </CreditItem>
+                              ))}
+                            </CreditWrap>
+                          </Mt40>
+                          <Mt40>
+                            <InfoFlexTitle>
+                              <p>제작진</p>
+                              <span>{detailTvData.credits.crew.length}명</span>
+                            </InfoFlexTitle>
+                            <CreditWrap>
+                              {detailTvData.credits.crew.map((crew) => (
+                                <CreditItem key={crew.credit_id}>
+                                  {crew.profile_path ?  <img src={makeImagePath(crew.profile_path, "w200")} /> : <img src={images} />}
+                                  <p>{crew.name ? crew.name : crew.original_name}</p>
+                                </CreditItem>
+                              ))}
+                            </CreditWrap>
+                          </Mt40>
+                        </BigInfo>
+                      </>
+                    )}
+                  </BigMovie>
                 </>
               )}
             </AnimatePresence>

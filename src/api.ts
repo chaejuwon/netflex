@@ -99,6 +99,7 @@ export interface ITv {
 
 export interface IDetailTv {
   backdrop_path: string;
+  credits: ITvCredit;
   genres :{
     id: number;
     name: string;
@@ -109,6 +110,17 @@ export interface IDetailTv {
   type: string;
   vote_average: number;
   vote_count: number;
+  tagline: string;
+  release_date: string;
+  first_air_date: string;
+  last_episode_to_air: {
+    air_date: string;
+    episode_number: number;
+    name: string;
+    still_path: string;
+    overview: string;
+
+  }
 }
 
 export interface ISearchTv {
@@ -129,7 +141,35 @@ export interface ISearchDetailTv {
   vote_count: number;
   id: number;
 }
-
+// 크레딧 정보
+export interface ITvCredit {
+  cast: ITvCast[];
+  crew: ITvCrew[];
+}
+export interface ITvCast {
+  cast_id: number;
+  character: string;
+  credit_id: string;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string;
+}
+export interface ITvCrew {
+  credit_id: string;
+  department: string;
+  gender: number;
+  id: number;
+  job: string;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string;
+}
 // movie
 export const getMovies = async () => {
   const response = await axios.get(
@@ -164,15 +204,27 @@ export const getDetailMovie = async (movieId: string) => {
 // tv
 export const getTvs = async () => {
   const response = await axios.get(
-    `${BASE_URL}/discover/tv?language=ko-KR&with_origin_country=KR&with_genres=18&api_key=${API_KEY}`
+    `${BASE_URL}/discover/tv?language=ko-KR&with_origin_country=KR&origin_country=kr&with_genres=18&api_key=${API_KEY}`
   )
   return response.data;
 }
 
 // 카테고리별 tv
 export const getCategoryTvs = async (category: string) => {
+  let text = "";
+  switch (category) {
+    case 'on_the_air':
+      text = 'first_air_date.desc';
+      break;
+    case 'popular':
+      text = 'popularity.desc';
+      break;
+    case 'top_rated':
+      text = 'vote_average.desc';
+      break;
+  }
   const response = await axios.get(
-    `${BASE_URL}/tv/${category}?language=en-US&page=1&api_key=${API_KEY}`
+    `${BASE_URL}/discover/tv?language=ko-KR&with_origin_country=KR&with_genres=18&first_air_date.gte=2024-01-01&sort_by=${text}&api_key=${API_KEY}`
   )
   return response.data;
 }
@@ -183,12 +235,12 @@ export const getDetailTv = async (tvId: string) => {
   // )
   // return response.data;
   const [detail, credit] = await Promise.all([
-    axios.get(`${BASE_URL}/tv/${tvId}?language=en-US&api_key=${API_KEY}`),
-    axios.get(`${BASE_URL}/tv/${tvId}/credits?language=en-US&api_key=${API_KEY}`)
+    axios.get(`${BASE_URL}/tv/${tvId}?language=ko-KR&api_key=${API_KEY}`),
+    axios.get(`${BASE_URL}/tv/${tvId}/credits?language=ko-KR&api_key=${API_KEY}`)
   ])
   return {
-    ...detail,
-    credits: credit
+    ...detail.data,
+    credits: credit.data
   }
 }
 
