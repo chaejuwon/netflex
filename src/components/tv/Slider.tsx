@@ -10,6 +10,7 @@ import { makeImagePath } from "../../utils";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useHistory, useRouteMatch } from "react-router-dom";
+import images from "../../images/no_image.jpg";
 
 
 const Slider = styled.div`
@@ -37,7 +38,7 @@ const SliderCol = styled(motion.div)<{bgPhoto: string}>`
   display: flex;
   align-items: end;
   height: 200px;
-  background: url(${props => props.bgPhoto});
+  background: url(${props => props.bgPhoto}) no-repeat center center;
   background-size: cover;
   cursor: pointer;
   &:first-child {
@@ -47,7 +48,7 @@ const SliderCol = styled(motion.div)<{bgPhoto: string}>`
     transform-origin: center right;
   }
 `;
-const ColTitle = styled.h2`
+const ColTitle = styled(motion.h2)`
   width: 100%;
   font-size:16px;
   color: ${props => props.theme.white.lighter};
@@ -85,13 +86,13 @@ const DecreaseBtn = styled.div`
 `;
 const rowVariants = {
   initial: (state: boolean) => ({
-    x: state ? window.innerWidth : -window.innerWidth
+    x: state ? -window.innerWidth : window.innerWidth
   }),
   animate: {
     x: 0
   },
   exit: (state: boolean) => ({
-    x: state ? -window.innerWidth : window.innerWidth
+    x: state ? window.innerWidth : -window.innerWidth
   })
 }
 const colVariants = {
@@ -104,6 +105,18 @@ const colVariants = {
     transition: {
       duration: 0.3,
       delay: 0.3
+    }
+  }
+}
+const titleVariants = {
+  normal: {
+    opacity: 0
+  },
+  hover: {
+    opacity: 1,
+    transition: {
+      duration: 0.3,
+      delay: 0.5
     }
   }
 }
@@ -164,14 +177,14 @@ function SliderAll({ category, onDetail }:SliderCategoryProps) {
                 <>
                   <SliderCol
                     key={tv.id}
-                    bgPhoto={makeImagePath(tv.backdrop_path, "w500")}
+                    bgPhoto={tv.backdrop_path ? makeImagePath(tv.backdrop_path, "w500") : images }
                     variants={colVariants}
                     initial="normal"
                     whileHover="hover"
-                    layoutId={category + tv.id}
+                    layoutId={category + "-" + tv.id}
                     onClick={() => detailTv(tv.id, category)}
                   >
-                    <ColTitle>{tv.name}</ColTitle>
+                    <ColTitle variants={titleVariants}>{tv.name}</ColTitle>
                   </SliderCol>
                 </>
               ))
