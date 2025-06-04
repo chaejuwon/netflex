@@ -124,7 +124,7 @@ const Button = styled(motion.button)`
   font-size:20px;
   width: 200px;
   color: ${props => props.theme.white.lighter};
-  border: 2px solid ${props => props.theme.black.darker};
+  border: 2px solid ${props => props.theme.white.lighter};
   border-radius: 5px;
   background: transparent;
   cursor: pointer;
@@ -342,6 +342,7 @@ function Tv() {
     queryKey: ["tv", "change"],
     queryFn: getTvs
   })
+  console.log(data);
   // airing_today TV API
   const {data: cateData, isLoading: cateIsLoading} = useQuery<IGetTvResult>({
     queryKey: ["tvs", "airing_today"],
@@ -398,10 +399,10 @@ function Tv() {
       <Wrapper>
         {isLoading ? "...loading" : (
           <>
-            <BgWrap bgPhoto={makeImagePath(data?.results[1].backdrop_path as string)}>
-              <Title>{data?.results[1].name}</Title>
-              <Overview>{data?.results[1].overview}</Overview>
-              <Button>상세보기</Button>
+            <BgWrap bgPhoto={makeImagePath(data?.results[0].backdrop_path as string)}>
+              <Title>{data?.results[0].name}</Title>
+              <Overview>{data?.results[0].overview}</Overview>
+              <Button onClick={() => detailTv(data?.results[0].id as number, "normal")}>상세보기</Button>
             </BgWrap>
             <Slider>
               <AnimatePresence initial={false} onExitComplete={onSlideFn}>
