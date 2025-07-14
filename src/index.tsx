@@ -6,6 +6,7 @@ import { ThemeProvider } from "styled-components";
 import { theme } from "./theme";
 import { createGlobalStyle } from "styled-components";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { HashRouter } from "react-router-dom";
 
 const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
@@ -107,12 +108,14 @@ const root = ReactDOM.createRoot(
 
 const client = new QueryClient();
 root.render(
-  <RecoilRoot>
-    <QueryClientProvider client={client}>
-      <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        <App />
-      </ThemeProvider>
-    </QueryClientProvider>
-  </RecoilRoot>
+  <HashRouter>
+    <RecoilRoot>
+      <QueryClientProvider client={client}>
+        <ThemeProvider theme={theme}>
+          <GlobalStyle />
+          <App />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </RecoilRoot>
+  </HashRouter>
 );
