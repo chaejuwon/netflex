@@ -10,10 +10,11 @@ import { styled } from "styled-components";
 import Footer from "../components/common/Footer";
 import { makeImagePath } from "../utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import SliderAll from "../components/tv/Slider";
 import images from "../images/no_image.jpg";
+import { device } from "../media";
 // 공토요소
 const Mt40 = styled.div`
   margin-top: 40px;
@@ -51,10 +52,12 @@ const Slider = styled.div`
 const SliderRow = styled(motion.div)`
   display:grid;
   gap: 5px;
-  grid-template-columns: repeat(6, 1fr);
   position: absolute;
   width: 100%;
   height: 100%;
+  @media ${device.mobile} {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 const SliderCol = styled(motion.div)<{bgPhoto: string}>`
@@ -110,6 +113,10 @@ const DecreaseBtn = styled.div`
 `;
 const Title = styled.h2`
   font-size: 72px;
+  font-weight: bold;
+  @media ${device.mobile} {
+    font-size: 48px;
+  }
 `;
 
 const Overview = styled.p`
@@ -117,6 +124,17 @@ const Overview = styled.p`
   line-height: 140%;
   width: 60%;
   margin:20px 0;
+  @media ${device.mobile} {
+    width:80%;
+    height: 110px;
+    font-size: 20px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 const Button = styled(motion.button)`
@@ -158,6 +176,9 @@ const BigMovie = styled(motion.div)`
   margin: 0 auto;
   background-color: ${(props) => props.theme.black.lighter};
   overflow-x: auto;
+  @media ${device.mobile} {
+    width: 80vw;
+  }
 `;
 const BigInfo = styled.div`
   display: flex;
@@ -172,16 +193,21 @@ const BigCover = styled.div`
   width: 100%;
   height: 350px;
   background-size: cover;
+  @media ${device.mobile} {
+    height: 300px;
+  }
 `;
 
 const BigTitle = styled.h2`
   color: ${props => props.theme.white.lighter};
   font-size: 40px;
   font-weight: bold;
+  @media ${device.mobile} {
+    font-size: 32px;
+  }
 `;
 const GenreWrap = styled.p`
   padding: 10px;
-
   span {
     padding: 2px 8px;
     border-radius: 5px;
@@ -190,12 +216,20 @@ const GenreWrap = styled.p`
     margin: 5px;
     display: inline-block;
   }
+  @media ${device.mobile} {
+    span {
+      font-size: 12px;
+    }
+  }
 `;
 
 const BigOverview = styled.p`
   color: ${props => props.theme.white.lighter};
   font-size: 16px;
   line-height: 140%;
+  @media ${device.mobile} {
+    font-size: 14px;
+  }
 `;
 const Tagline = styled.h2`
   font-size:28px;
@@ -211,17 +245,26 @@ const Tagline = styled.h2`
     height: 100%;
     background-color: red;
   }
+  @media ${device.mobile} {
+    font-size:24px;
+  }
 `;
 const InfoTitle = styled.h3`
   font-size:22px;
   font-weight: bold;
   padding: 0;
   color: ${props => props.theme.white.lighter};
+  @media ${device.mobile} {
+    font-size:18px;
+  }
 `;
 const InfoContent = styled.p`
   font-size: 18px;
   margin-left:15px;
   color: ${props => props.theme.white.lighter};
+  @media ${device.mobile} {
+    font-size: 16px;
+  }
 `;
 const InfoFlexTitle = styled.div`
   display: flex;
@@ -235,11 +278,20 @@ const InfoFlexTitle = styled.div`
   span {
     font-size:20px;
   }
+  @media ${device.mobile} {
+    p {
+      font-size:18px;
+    }
+    span {
+      font-size:16px;
+    }
+  }
 `;
 const GridWrap = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap:10px;
+
 `;
 const FlexWrap = styled.div`
   display: flex;
@@ -260,11 +312,19 @@ const CreditItem = styled.div`
   img {
     width: 100%;
     max-width: 145px;
+    min-width: 100px;
     border-radius: 50%;
     aspect-ratio: 1/1;
   }
   p {
     margin-top:5px;
+  }
+  @media ${device.mobile} {
+    max-width: 100px;
+    height:125px;
+    p {
+      font-size: 12px;
+    }
   }
 `;
 const EpisodeWrap = styled.div`
@@ -272,6 +332,18 @@ const EpisodeWrap = styled.div`
   justify-content: start;
   gap: 20px;
   margin-top:20px;
+  div {
+    aspect-ratio: 8 / 5;
+    width: 100%;
+    max-width: 350px;
+    overflow: hidden;
+  }
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
   h2 {
     font-size: 24px;
     font-weight: bold;
@@ -280,6 +352,14 @@ const EpisodeWrap = styled.div`
   p {
     font-size: 16px;
     line-height: 140%;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 8;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    @media ${device.mobile} {
+      -webkit-line-clamp: 4;
+    }
   }
 `;
 const rowVariants = {
@@ -348,11 +428,28 @@ function Tv() {
     queryKey: ["tvs", "airing_today"],
     queryFn: () => getCategoryTvs("airing_today")
   })
-  // 버튼클릭 시 슬라이드
-  const offset = 6;
+  // const offset = 6;
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const [state, setState] = useState(false);
+  const [offset, setOffset] = useState(6);
+
+  // 화면 크기에 따라 offset 조정
+  useEffect(() => {
+    const updateOffset = () => {
+      const width = window.innerWidth;
+      if (width <= 768) {
+        setOffset(2);
+      } else {
+        setOffset(6);
+      }
+    };
+
+    updateOffset();
+    window.addEventListener("resize", updateOffset);
+
+    return () => window.removeEventListener("resize", updateOffset);
+  }, []);
   const onSlideFn = () => {
     setLeaving(prev => !prev);
   }
@@ -501,7 +598,9 @@ function Tv() {
                               <p>최근회차 - Episode{detailTvData.last_episode_to_air?.episode_number} ({detailTvData.last_episode_to_air?.air_date})</p>
                             </InfoFlexTitle>
                             <EpisodeWrap>
-                              <img style={{ width: 350 }} src={makeImagePath(detailTvData.last_episode_to_air?.still_path)} />
+                              <div>
+                                <img src={detailTvData.last_episode_to_air?.still_path ? makeImagePath(detailTvData.last_episode_to_air?.still_path) : images} />
+                              </div>
                               <div>
                                 <h2>{detailTvData.last_episode_to_air?.name}</h2>
                                 <p>{detailTvData.last_episode_to_air?.overview}</p>

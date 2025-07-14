@@ -7,10 +7,11 @@ import {
 } from "../../api";
 import { styled } from "styled-components";
 import { makeImagePath } from "../../utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import images from "../../images/no_image.jpg";
+import { device } from "../../media";
 
 
 const Slider = styled.div`
@@ -28,11 +29,19 @@ const SliderRow = styled(motion.div)`
   gap:5px;
   position: absolute;
   width: 100%;
+
+  @media ${device.mobile} {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 const SliderTitle = styled.h2`
   font-size:32px;
   color: ${props=> props.theme.white.lighter};
   margin-bottom:20px;
+
+  @media ${device.mobile} {
+    font-size: 24px;
+  }
 `;
 const SliderCol = styled(motion.div)<{bgPhoto: string}>`
   display: flex;
@@ -130,10 +139,29 @@ function SliderAll({ category, onDetail }:SliderCategoryProps) {
     queryFn: () => getCategoryTvs(category)
   })
   // 슬라이드 함수
-  const offset = 6;
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const [state, setState] = useState(false);
+
+  const [offset, setOffset] = useState(6);
+
+  // 화면 크기에 따라 offset 조정
+  useEffect(() => {
+    const updateOffset = () => {
+      const width = window.innerWidth;
+      if (width <= 768) {
+        setOffset(2);
+      } else {
+        setOffset(6);
+      }
+    };
+
+    updateOffset();
+    window.addEventListener("resize", updateOffset);
+
+    return () => window.removeEventListener("resize", updateOffset);
+  }, []);
+
   const increaseFn = () => {
     if (leaving) return;
     leavingFn();

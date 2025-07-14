@@ -13,6 +13,7 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import SliderAll from "../components/home/Slider";
 import Footer from "../components/common/Footer";
 import images from "../images/no_image.jpg";
+import { device } from "../media";
 // 공토요소
 const Mt40 = styled.div`
   margin-top: 40px;
@@ -43,6 +44,10 @@ const Banner = styled.div<{ bgPhoto: string }>`
 
 const Title = styled.h2`
   font-size: 72px;
+  font-weight: bold;
+  @media ${device.mobile} {
+    font-size: 48px;
+  }
 `;
 
 const Overview = styled.p`
@@ -50,6 +55,17 @@ const Overview = styled.p`
   line-height: 140%;
   width: 60%;
   margin:20px 0;
+  @media ${device.mobile} {
+    width:80%;
+    height: 110px;
+    font-size: 20px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 const Button = styled(motion.button)`
@@ -91,6 +107,9 @@ const BigMovie = styled(motion.div)`
   margin: 0 auto;
   background-color: ${(props) => props.theme.black.lighter};
   overflow-x: auto;
+  @media ${device.mobile} {
+    width: 80vw;
+  }
 `;
 const BigInfo = styled.div`
   display: flex;
@@ -105,16 +124,21 @@ const BigCover = styled.div`
   width: 100%;
   height: 350px;
   background-size: cover;
+  @media ${device.mobile} {
+    height: 300px;
+  }
 `;
 
 const BigTitle = styled.h2`
   color: ${props => props.theme.white.lighter};
   font-size: 40px;
   font-weight: bold;
+  @media ${device.mobile} {
+    font-size: 32px;
+  }
 `;
 const GenreWrap = styled.p`
   padding: 10px;
-
   span {
     padding: 2px 8px;
     border-radius: 5px;
@@ -122,12 +146,20 @@ const GenreWrap = styled.p`
     font-size: 14px;
     margin-right: 8px;
   }
+  @media ${device.mobile} {
+    span {
+      font-size: 12px;
+    }
+  }
 `;
 
 const BigOverview = styled.p`
   color: ${props => props.theme.white.lighter};
   font-size: 16px;
   line-height: 140%;
+  @media ${device.mobile} {
+    font-size: 14px;
+  }
 `;
 const Tagline = styled.h2`
   font-size:28px;
@@ -143,17 +175,26 @@ const Tagline = styled.h2`
     height: 100%;
     background-color: red;
   }
+  @media ${device.mobile} {
+    font-size:24px;
+  }
 `;
 const InfoTitle = styled.h3`
   font-size:22px;
   font-weight: bold;
   padding: 0;
   color: ${props => props.theme.white.lighter};
+  @media ${device.mobile} {
+    font-size:18px;
+  }
 `;
 const InfoContent = styled.p`
   font-size: 18px;
   margin-left:15px;
   color: ${props => props.theme.white.lighter};
+  @media ${device.mobile} {
+    font-size: 16px;
+  }
 `;
 const InfoFlexTitle = styled.div`
   display: flex;
@@ -166,6 +207,14 @@ const InfoFlexTitle = styled.div`
   }
   span {
     font-size:20px;
+  }
+  @media ${device.mobile} {
+    p {
+      font-size:18px;
+    }
+    span {
+      font-size:16px;
+    }
   }
 `;
 const GridWrap = styled.div`
@@ -192,11 +241,19 @@ const CreditItem = styled.div`
   img {
     width: 100%;
     max-width: 145px;
+    min-width: 100px;
     border-radius: 50%;
     aspect-ratio: 1/1;
   }
   p {
     margin-top:5px;
+  }
+  @media ${device.mobile} {
+    max-width: 100px;
+    height:125px;
+    p {
+      font-size: 12px;
+    }
   }
 `;
 function Home() {

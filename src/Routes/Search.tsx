@@ -9,9 +9,10 @@ import {
 } from "../api";
 import { styled } from "styled-components";
 import { makeImagePath } from "../utils";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import images from "../images/no_image.jpg";
 import Footer from "../components/common/Footer";
+import { device } from "../media";
 
 const Mt50 = styled.div`
   margin-top:100px;
@@ -20,8 +21,10 @@ const Mt50 = styled.div`
 const Wrapper = styled.div`
   width: 100%;
   max-width: 1200px;
-  margin:0 auto;
-  padding-top:80px;
+  margin:80px auto 50px;
+  @media ${device.mobile} {
+    padding:0 15px;
+  }
 `;
 
 const MovieTitle = styled.div`
@@ -33,6 +36,9 @@ const SearchWrap = styled.div`
   display: grid;
   gap:10px;
   grid-template-columns: repeat(5, 1fr);
+  @media ${device.mobile} {
+    grid-template-columns: repeat(3, 1fr);
+  }
 `;
 
 const SearchItem = styled.div`
@@ -62,6 +68,24 @@ const Title = styled.h2`
 function Search() {
   const location = useLocation();
   const search = new URLSearchParams(location.search).get("keyword");
+  const [offset, setOffset] = useState(10);
+
+  useEffect(() => {
+    const updateOffset = () => {
+      const width = window.innerWidth;
+
+      if(width <= 768) {
+        setOffset(6);
+      } else {
+        setOffset(10);
+      }
+    }
+
+    updateOffset();
+    window.addEventListener("resize", updateOffset);
+
+    return () => window.removeEventListener("resize", updateOffset);
+  },[]);
 
   const { data: movieData, isLoading: movieIsLoading } = useQuery<IGetMovieResult>({
     queryKey: ["searchMovie", search],
@@ -82,7 +106,7 @@ function Search() {
         <MovieTitle>"{search}"의 영화 검색결과</MovieTitle>
         <SearchWrap>
           {movieIsLoading ? "isLoading..." : (
-            movieData?.results.slice(0, 10).map((movie) => (
+            movieData?.results.slice(0, offset).map((movie) => (
               <SearchItem key={movie.id}>
                 {movie.backdrop_path ? <Img src={makeImagePath(movie.backdrop_path)} /> : <Img src={images} />}
 
@@ -95,7 +119,7 @@ function Search() {
           <MovieTitle>"{search}"의 티비프로그램 검색결과</MovieTitle>
           <SearchWrap>
             {tvIsLoading ? "...isTvLoading" : (
-              tvData?.results.slice(0, 10).map((tv) => (
+              tvData?.results.slice(0, offset).map((tv) => (
                 <SearchItem key={tv.id}>
                   {tv.backdrop_path ? <Img src={makeImagePath(tv.backdrop_path)} /> : <Img src={images} />}
                   <Title>{tv.original_name}</Title>

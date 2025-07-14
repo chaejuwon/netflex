@@ -1,9 +1,13 @@
 import { styled } from "styled-components";
+import { device } from "../../media";
 
 const FooterWrap = styled.div`
   width: 100%;
   padding:100px 0 20px;
   position: relative;
+  @media ${device.mobile} {
+    padding:0 20px 20px;
+  }
 `;
 
 const FooterGap = styled.div`

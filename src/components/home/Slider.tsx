@@ -3,7 +3,8 @@ import { makeImagePath } from "../../utils";
 import { styled } from "styled-components";
 import { useQuery } from "@tanstack/react-query";
 import { getCategoryMovies, IGetMovieResult } from "../../api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { device } from "../../media";
 
 const PopularSlider = styled(motion.div)`
   position: relative;
@@ -18,6 +19,10 @@ const PopularSlider = styled(motion.div)`
 const PopularTitle = styled.h2`
   font-size: 32px;
   color: ${props => props.theme.white.lighter};
+  
+  @media ${device.mobile} {
+    font-size: 24px;
+  }
 `;
 
 const PopularRow = styled(motion.div)`
@@ -27,6 +32,10 @@ const PopularRow = styled(motion.div)`
   gap:5px;
   position: absolute;
   width: 100%;
+
+  @media ${device.mobile} {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 const PopularCol = styled(motion.div)<{bgPhoto: string}>`
@@ -140,7 +149,24 @@ function SliderAll({category, onBoxClick}:SliderAllProps) {
 
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
-  const offset = 6;
+  const [offset, setOffset] = useState(6);
+
+  // 화면 크기에 따라 offset 조정
+  useEffect(() => {
+    const updateOffset = () => {
+      const width = window.innerWidth;
+      if (width <= 768) {
+        setOffset(2);
+      } else {
+        setOffset(6);
+      }
+    };
+
+    updateOffset();
+    window.addEventListener("resize", updateOffset);
+
+    return () => window.removeEventListener("resize", updateOffset);
+  }, []);
 
   const toggleLeaving = () => setLeaving(prev => !prev);
 
