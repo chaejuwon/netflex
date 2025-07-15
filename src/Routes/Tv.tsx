@@ -348,7 +348,6 @@ const EpisodeWrap = styled.div`
     height: 100%;
     object-fit: cover;
   }
-
   h2 {
     font-size: 24px;
     font-weight: bold;
