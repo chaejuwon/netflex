@@ -366,8 +366,6 @@ const EpisodeWrap = styled.div`
   @media ${device.mobile} {
     h2 {
       font-size: 16px;
-      font-weight: bold;
-      margin-bottom: 7px;
     }
     p {
       font-size: 12px;
