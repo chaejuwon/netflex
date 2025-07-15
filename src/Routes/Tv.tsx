@@ -218,6 +218,7 @@ const GenreWrap = styled.p`
     display: inline-block;
   }
   @media ${device.mobile} {
+    padding: 0;
     span {
       font-size: 12px;
     }
@@ -292,7 +293,10 @@ const GridWrap = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap:10px;
-
+  @media ${device.mobile} {
+    grid-template-columns: repeat(1, 1fr);
+    gap:15px;
+  }
 `;
 const FlexWrap = styled.div`
   display: flex;
@@ -358,8 +362,16 @@ const EpisodeWrap = styled.div`
     -webkit-line-clamp: 8;
     overflow: hidden;
     text-overflow: ellipsis;
-    @media ${device.mobile} {
-      -webkit-line-clamp: 4;
+  }
+  @media ${device.mobile} {
+    h2 {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+    p {
+      font-size: 12px;
+      -webkit-line-clamp: 3;
     }
   }
 `;

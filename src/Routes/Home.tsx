@@ -147,6 +147,7 @@ const GenreWrap = styled.p`
     margin-right: 8px;
   }
   @media ${device.mobile} {
+    padding: 0;
     span {
       font-size: 12px;
     }
@@ -221,6 +222,10 @@ const GridWrap = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap:10px;
+  @media ${device.mobile} {
+    grid-template-columns: repeat(1, 1fr);
+    gap:15px;
+  }
 `;
 const FlexWrap = styled.div`
   display: flex;
